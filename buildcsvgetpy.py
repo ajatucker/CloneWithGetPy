@@ -8,23 +8,24 @@ from unidiff import PatchSet
 from io import StringIO
 
 def get_changed_files(currCommit, repo):
+    print("This is current commit info: ",currCommit) 
     changed_files = []
-    commit = repo.commit(currCommit)
-    uni_diff_text = repo.git.diff(commit, commit,
-                                    ignore_blank_lines=True, 
-                                    ignore_space_at_eol=True)
-
-    patch_set = PatchSet(StringIO(uni_diff_text), encoding='utf-8')
-    for patched_file in patch_set:
-        print('Are we hitting this?')
-        file = patched_file.path
-        print('filename:',file)
+    if(currCommit[-1] is None):
+        for x in currCommit[0].diff(currCommit[-1]):
+            if x.a_blob.path not in changed_files:
+                changed_files.append(x.a_blob.path)
+        
+            if x.b_blob is not None and x.b_blob.path not in changed_files:
+                changed_files.append(x.b_blob.path)
+    else:
+        print("empty")
+        
     print(changed_files)
 
 
 
 #need to get path
-clone_repo_path = 'D:/CloneWithGetPy/ClonedRepos/'
+clone_repo_path = 'D:/ClonedRepos/'
 #need to create the datafile we'll update
 #table = [{'GitAuthor': 'testname','ProjectName':'notproject', 'CommitID':'00000','CommitMessage':'this is a test message'}]
 with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", encoding='utf-8') as write_file:
@@ -46,12 +47,13 @@ with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", encoding='
             commits = list(local_repo.iter_commits('master'))
             #commits_list = list(local_repo.iter_commits('master'))
             for commit in commits:
+                print("Getting changed files: ")
+                get_changed_files(commits, local_repo)
                 print(commit.author) # author name
                 print(reponame[cell])
                 print(commit.hexsha)
                 print(commit.message) #commit message
                     #diff = commit.diff(prevCommit)
-                get_changed_files(commit, local_repo)
                     #print(diff)
                 new_row = [commit.author,reponame[cell],commit.hexsha,commit.message]
                 z.writerow(new_row)

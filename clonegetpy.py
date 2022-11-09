@@ -3,7 +3,7 @@ from git import Repo
 import os
 #This is the repo that will contain all of our cloned repos
 clonegetpy = Repo('D:/CloneWithGetPy')
-clone_repo_path = 'D:/CloneWithGetPy/ClonedRepos/'
+clone_repo_path = 'D:/ClonedRepos/'
 
 #The file path is hard coded, but it could be done dynamically by using os
 dataframe = pd.read_csv('D:/CloneWithGetPy/ML-PythonProjects-WithTravisCI.csv')
