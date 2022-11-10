@@ -22,7 +22,8 @@ from io import StringIO
         
 #     print(changed_files)
 
-def get_diff_files(diffObj):
+def get_diff_files(c, prevC):
+    diffObj = c.diff(prevC)
     all_files = []
     for diff in diffObj.iter_change_type('A'):
         #print("Added file", str(diff))
@@ -40,10 +41,16 @@ def get_diff_files(diffObj):
         #print("Changed in type file", str(diff))
         all_files.append(diff)
 
-    print("All changed files:")
+    lsofFiles = []
+    #print("All changed files:")
     for f in all_files:
         a_path = f.a_rawpath.decode('utf-8')
-        print(a_path)
+        #b_path = f.a_rawpath.decode('utf-8')
+        #print("+",b_path)
+        #print("-",a_path)
+        lsofFiles.append(a_path)
+    print("All changed files: ",lsofFiles)
+    return lsofFiles
 
 
 
@@ -51,11 +58,11 @@ def get_diff_files(diffObj):
 clone_repo_path = 'D:/ClonedRepos/'
 #need to create the datafile we'll update
 #table = [{'GitAuthor': 'testname','ProjectName':'notproject', 'CommitID':'00000','CommitMessage':'this is a test message'}]
-with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", encoding='utf-8') as write_file:
+with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline='', encoding='utf-8') as write_file:
     #create data table
-    #header = ['GitAuthor','ProjectName', 'CommitID','CommitMessage']
+    header = ['GitAuthor','ProjectName', 'CommitID','CommitMessage', 'Lsof ModifiedFiles']
     z = writer(write_file)
-    #z.writerow(header)
+    z.writerow(header)
     #z.writerows(table)
     
     readDataframe = pd.read_csv('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv')
@@ -68,19 +75,24 @@ with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", encoding='
             print("Reading from Repository:", reponame[cell])
             local_repo = Repo(file_path)
             commits = list(local_repo.iter_commits('master'))
-            prevCommit = commits[0]
+            #noCommit = commits[-1]
             for commit in commits:
+                prevIndex = commits.index(commit)
+                if(prevIndex == (len(commits)-1)):
+                    prevCommit = commits[prevIndex]
+                else:
+                    prevCommit = commits[prevIndex+1]
                 #get_changed_files(commit, prevCommit, local_repo)
-                print(commit.author) # author name
-                print(reponame[cell])
-                print(commit.hexsha)
-                print(commit.message) #commit message
-                new_row = [commit.author,reponame[cell],commit.hexsha,commit.message]
-                print("Getting updated files: ")
-                diff = commit.diff(prevCommit)
-                get_diff_files(diff)
+                print("Commit author: ",commit.author) # author name
+                print("Repo name: ",reponame[cell])
+                print("CommitID: ",commit.hexsha)
+                print("Commit Message: ",commit.message) #commit message
+                commitFiles = get_diff_files(commit, prevCommit)
+                #diff = commit.diff(prevCommit)
+                new_row = [commit.author,reponame[cell],commit.hexsha,commit.message, commitFiles]
+                #print("Getting updated files: ")
                 z.writerow(new_row)
-                prevCommit = commit
+                #prevCommit = commit
            #table.__add__({'GitAuthor': commit.author, 'ProjectName': reponame[cell], 'CommitID': commit.hexsha, 'CommitMessage': commit.message})
         else:
             print("There was an error accessing", reponame[cell], "repository.")
