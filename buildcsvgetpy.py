@@ -45,10 +45,12 @@ def get_diff_files(c, prevC):
     #print("All changed files:")
     for f in all_files:
         a_path = f.a_rawpath.decode('utf-8')
+        #if('travis' in str(a_path)):
+        lsofFiles.append(a_path)
+
         #b_path = f.a_rawpath.decode('utf-8')
         #print("+",b_path)
         #print("-",a_path)
-        lsofFiles.append(a_path)
     print("All changed files: ",lsofFiles)
     return lsofFiles
 
@@ -88,10 +90,13 @@ with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline=''
                 print("CommitID: ",commit.hexsha)
                 print("Commit Message: ",commit.message) #commit message
                 commitFiles = get_diff_files(commit, prevCommit)
+                
+                if ('.travis.yml' in commitFiles):
+                    new_row = [commit.author,reponame[cell],commit.hexsha,commit.message, commitFiles]
+                    z.writerow(new_row)
+
                 #diff = commit.diff(prevCommit)
-                new_row = [commit.author,reponame[cell],commit.hexsha,commit.message, commitFiles]
                 #print("Getting updated files: ")
-                z.writerow(new_row)
                 #prevCommit = commit
            #table.__add__({'GitAuthor': commit.author, 'ProjectName': reponame[cell], 'CommitID': commit.hexsha, 'CommitMessage': commit.message})
         else:
