@@ -51,7 +51,7 @@ def get_diff_files(c, prevC):
         #b_path = f.a_rawpath.decode('utf-8')
         #print("+",b_path)
         #print("-",a_path)
-    print("All changed files: ",lsofFiles)
+    #print("All changed files: ",lsofFiles)
     return lsofFiles
 
 
@@ -70,13 +70,19 @@ with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline=''
     readDataframe = pd.read_csv('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv')
     reponame = readDataframe['RepoName']
     export = readDataframe.values.T[0].tolist()
-    for cell in range(1):
+    for cell in range(len(export)):
+        if cell == 190 or cell == 210 or cell == 391 or cell == 417:
+            print("Repository", reponame[cell], "has a long file path or doesn't exist.")
+            continue
         file_path = os.path.join(clone_repo_path, reponame[cell])
         is_created = os.path.isdir(file_path)
         if(is_created):
             print("Reading from Repository:", reponame[cell])
             local_repo = Repo(file_path)
-            commits = list(local_repo.iter_commits('master'))
+            branch = local_repo.active_branch
+            branch = branch.name
+            commits = list(local_repo.iter_commits(branch))
+                #commits = list(local_repo.iter_commits('master'))
             #noCommit = commits[-1]
             for commit in commits:
                 prevIndex = commits.index(commit)
@@ -85,13 +91,14 @@ with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline=''
                 else:
                     prevCommit = commits[prevIndex+1]
                 #get_changed_files(commit, prevCommit, local_repo)
-                print("Commit author: ",commit.author) # author name
-                print("Repo name: ",reponame[cell])
-                print("CommitID: ",commit.hexsha)
-                print("Commit Message: ",commit.message) #commit message
                 commitFiles = get_diff_files(commit, prevCommit)
                 
                 if ('.travis.yml' in commitFiles):
+                    print("Commit author: ",commit.author) # author name
+                    print("Repo name: ",reponame[cell])
+                    print("CommitID: ",commit.hexsha)
+                    print("Commit Message: ",commit.message) #commit message
+                    print("Files changed: ",commitFiles)
                     new_row = [commit.author,reponame[cell],commit.hexsha,commit.message, commitFiles]
                     z.writerow(new_row)
 
