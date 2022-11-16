@@ -34,7 +34,7 @@ def get_diff_files(c, prevC):
 #need to get path - add in dynamic pathing
 clone_repo_path = 'D:/ClonedRepos/'
 #need to create the datafile we'll update
-with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline='', encoding='utf-8') as write_file:
+with open("D:/CloneWithGetPy/2-ML-CommitsFrom-PythonProjects.csv", "a", newline='', encoding='utf-8') as write_file:
     #create data table
     header = ['GitAuthor','ProjectName', 'CommitID','CommitMessage', 'Lsof ModifiedFiles']
     z = writer(write_file)
@@ -43,7 +43,7 @@ with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline=''
     readDataframe = pd.read_csv('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv')
     reponame = readDataframe['RepoName']
     export = readDataframe.values.T[0].tolist()
-    for cell in range(len(export)):
+    for cell in range(6): #len(export)
         if cell == 190 or cell == 210 or cell == 391 or cell == 417:
             print("Repository", reponame[cell], "has a long file path or doesn't exist.")
             continue
@@ -69,8 +69,11 @@ with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline=''
                     print("CommitID: ",commit.hexsha)
                     print("Commit Message: ",commit.message) #commit message
                     print("Files changed: ",commitFiles)
-                    new_row = [commit.author,reponame[cell],commit.hexsha,commit.message, commitFiles]
+                    for f in commitFiles:
+                        print("This file is in this list, ",f)
+                    new_row = [commit.author,reponame[cell],commit.hexsha,commit.message,commitFiles]
                     z.writerow(new_row)
+                    commitFiles=[]
         else:
             print("There was an error accessing", reponame[cell], "repository.")
 
