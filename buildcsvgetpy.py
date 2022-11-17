@@ -11,17 +11,7 @@ from io import StringIO
 def get_diff_files(c, prevC):
     diffObj = c.diff(prevC)
     all_files = []
-    for diff in diffObj.iter_change_type('A'):
-        all_files.append(diff)
-    for diff in diffObj.iter_change_type('D'):
-        all_files.append(diff)
-    for diff in diffObj.iter_change_type('R'):
-        all_files.append(diff)
-    for diff in diffObj.iter_change_type('M'):
-        all_files.append(diff)
-    for diff in diffObj.iter_change_type('T'):
-        all_files.append(diff)
-
+    all_files =  list(diffObj.iter_change_type('M')) + list(diffObj.iter_change_type('A')) + list(diffObj.iter_change_type('D')) #+ list(diffObj.iter_change_type('R')) 
     lsofFiles = []
     for f in all_files:
         a_path = f.a_rawpath.decode('utf-8')
@@ -43,7 +33,7 @@ with open("D:/CloneWithGetPy/2-ML-CommitsFrom-PythonProjects.csv", "a", newline=
     readDataframe = pd.read_csv('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv')
     reponame = readDataframe['RepoName']
     export = readDataframe.values.T[0].tolist()
-    for cell in range(6): #len(export)
+    for cell in range(len(export)): #len(export)
         if cell == 190 or cell == 210 or cell == 391 or cell == 417:
             print("Repository", reponame[cell], "has a long file path or doesn't exist.")
             continue
