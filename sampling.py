@@ -24,6 +24,7 @@ with open("D:/CloneWithGetPy/ML-SampledCommitsFrom-PythonProjects.csv", "a", new
         print(row)
         row_number = row.index.tolist()
         new_row = [export[row_number[0]][0],export[row_number[0]][1],export[row_number[0]][2],export[row_number[0]][3],export[row_number[0]][4]]
+        #print("Fixing row number: ",row_number[0]+6)
         print("Inserting row: ",new_row)
         sampled_list.append(new_row)
         z.writerow(new_row)
