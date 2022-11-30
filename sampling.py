@@ -11,8 +11,8 @@ import random
 sample_size = 379
 sampled_list = []
 
-with open("D:/CloneWithGetPy/ML-SampledCommitsFrom-PythonProjects.csv", "a", newline='', encoding='utf-8') as write_file:
-    readDataframe = pd.read_csv('D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv')
+with open("D:/CloneWithGetPy/RML-SampledCommitsFrom-PythonProjects.csv", "a", newline='', encoding='utf-8') as write_file:
+    readDataframe = pd.read_csv('D:/CloneWithGetPy/Re-ML-CommitsFrom-PythonProjects.csv')
     header = ['GitAuthor','ProjectName', 'CommitID','CommitMessage', 'Lsof ModifiedFiles']
     z = writer(write_file)
     z.writerow(header)

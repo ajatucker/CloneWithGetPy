@@ -7,23 +7,18 @@ from csv import writer
 from unidiff import PatchSet
 from io import StringIO
 
-def get_diff_files(c, prevC):
-    diffObj = c.diff(prevC)
-    all_files = []
-    all_files =  list(diffObj.iter_change_type('M')) #+ list(diffObj.iter_change_type('A')) + list(diffObj.iter_change_type('D')) #+ list(diffObj.iter_change_type('R')) 
-    lsofFiles = []
-    for f in all_files:
-        a_path = f.a_rawpath.decode('utf-8')
-        lsofFiles.append(a_path)
-    #print("All changed files: ",lsofFiles)
-    return lsofFiles
-
-
+def get_file_name(info):
+    lsofNames = []
+    for n,dict_ in info.items():
+        print("This file name is ",n)
+        print("This file's changes are ",dict_)
+        lsofNames.append(n)
+    return lsofNames
 
 #need to get path - add in dynamic pathing
 clone_repo_path = 'D:/ClonedRepos/'
 #need to create the datafile we'll update
-with open("D:/CloneWithGetPy/2-ML-CommitsFrom-PythonProjects.csv", "a", newline='', encoding='utf-8') as write_file:
+with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline='', encoding='utf-8') as write_file:
     #create data table
     header = ['GitAuthor','ProjectName', 'CommitID','CommitMessage', 'Lsof ModifiedFiles']
     z = writer(write_file)
@@ -44,23 +39,17 @@ with open("D:/CloneWithGetPy/2-ML-CommitsFrom-PythonProjects.csv", "a", newline=
             branch = local_repo.active_branch
             branch = branch.name
             commits = list(local_repo.iter_commits(branch))
+
             for commit in commits:
-                prevIndex = commits.index(commit)
-                if(prevIndex == (len(commits)-1)):
-                    prevCommit = commits[prevIndex]
-                else:
-                    prevCommit = commits[prevIndex+1]
-                commitFiles = get_diff_files(commit, prevCommit)
+                commitFiles = get_file_name(commit.stats.files)
                 
                 if ('.travis.yml' in commitFiles):
                     print("Commit author: ",commit.author) # author name
                     print("Repo name: ",reponame[cell])
                     print("CommitID: ",commit.hexsha)
                     print("Commit Message: ",commit.message) #commit message
-                    print("Files changed: ",commitFiles)
-                    for f in commitFiles:
-                        print("This file is in this list, ",f)
-                    new_row = [commit.author,reponame[cell],commit.hexsha,commit.message,commitFiles]
+                    print("Files changed: ", commitFiles)
+                    new_row = [commit.author,reponame[cell],commit.hexsha,commit.message, commitFiles]
                     z.writerow(new_row)
                 commitFiles=[]
         else:

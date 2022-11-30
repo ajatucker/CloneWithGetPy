@@ -1,3 +1,0 @@
-GitAuthor,ProjectName,CommitID,CommitMessage,Lsof ModifiedFiles
-duxuhao,duxuhao/Feature-Selection,90e7fddb8ddfe5d6a7d4215e516fc21aa1b80f12,"add SetFeatureEachRound in sequence_selection to speed up selecting
-","['.travis.yml', 'MLFeatureSelection/README.md', 'MLFeatureSelection/__init__.py', 'MLFeatureSelection/sequence_selection.py', 'README.md', '_config.yml', 'setup.py']"
