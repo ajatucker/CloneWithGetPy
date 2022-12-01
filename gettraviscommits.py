@@ -10,8 +10,8 @@ from io import StringIO
 def get_file_name(info):
     lsofNames = []
     for n,dict_ in info.items():
-        print("This file name is ",n)
-        print("This file's changes are ",dict_)
+        #print("This file name is ",n)
+        #print("This file's changes are ",dict_)
         lsofNames.append(n)
     return lsofNames
 
@@ -27,7 +27,7 @@ with open("D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", "a", newline=''
     readDataframe = pd.read_csv('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv')
     reponame = readDataframe['RepoName']
     export = readDataframe.values.T[0].tolist()
-    for cell in range(276, 277): #len(export)
+    for cell in range(len(export)): #len(export)
         if cell == 190 or cell == 210 or cell == 391 or cell == 417:
             print("Repository", reponame[cell], "has a long file path or doesn't exist.")
             continue
