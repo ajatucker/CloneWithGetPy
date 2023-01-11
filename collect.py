@@ -19,12 +19,12 @@ class Writer():
         header = ['GitAuthor','ProjectName', 'CommitID','CommitMessage', 'Lsof ModifiedFiles']
         write = writer(ofile)
         write.writerow(header)
-        write.close()
+        #write.close()
     def write_to_file(self, new_row):
         ofile = open(ofile, "a", newline='', encoding='utf-8')
         write = writer(ofile)
         write.writerow(new_row)
-        write.close()
+        #write.close()
 
 class Sampler():          
     def __init__(self, size, c_list):
@@ -76,13 +76,18 @@ class RepoContainer():
 
 if __name__ == "__main__":
     clone_repo_path = 'D:/ClonedRepos/' #need to update so desired file paths are chosen by user
-    commit_write = Writer('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv', "D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv")
-    sample_write = Writer('D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv', "D:/CloneWithGetPy/ML-SampledCommitsFrom-PythonProjects.csv")
+    commit_frame = pd.DataFrame()
+    sample_frame = pd.DataFrame()
+    commit_write = Writer('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv', "D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", commit_frame)
+    sample_write = Writer('D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv', "D:/CloneWithGetPy/ML-SampledCommitsFrom-PythonProjects.csv", sample_frame)
     df = pd.read_csv(commit_write.ifile)
+    rn = df['RepoName']
+    url = df['GitHubURL']
     #repo_list = [] -- doesn't seem necessary to have to hold all the repos for now
-    for cell in range(len(df)): 
+    for cell in df.index: 
+        #print("Nothing is here", cell['RepoName'])
         try:
-            currRepo = RepoContainer(clone_repo_path, df[cell]['RepoName'], df[cell]['GitHubURL'])
+            currRepo = RepoContainer(clone_repo_path, rn[cell], url[cell])
             if(currRepo.is_created):
                 print("Already cloned", currRepo.reponame)
             else:
@@ -91,7 +96,7 @@ if __name__ == "__main__":
                 print("Getting commits from repository:", currRepo.reponame)
                 currRepo.get_commits(commit_write)
         except:
-            print("Repository", currRepo.reponame, "has a long file path or doesn't exist in github.")
+            print("Repository has a long file path or doesn't exist in github.")
             continue
     
     s_df = pd.read_csv(commit_write.ofile)
