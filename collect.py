@@ -75,17 +75,16 @@ class RepoContainer():
 
 
 if __name__ == "__main__":
-    clone_repo_path = 'D:/ClonedRepos/' #need to update so desired file paths are chosen by user
+    clone_repo_path = 'D:/ClonedRepos/' #change this file path
     commit_frame = pd.DataFrame()
     sample_frame = pd.DataFrame()
-    commit_write = Writer('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv', "D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", commit_frame)
-    sample_write = Writer('D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv', "D:/CloneWithGetPy/ML-SampledCommitsFrom-PythonProjects.csv", sample_frame)
+    #The first file paths below are the input files, and the second file paths are the output files
+    commit_write = Writer('C:/Users/ogime/Desktop/ML-DevOps-Research/ML-PythonProjects-WithTravisCI-Test.csv', "D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv", commit_frame) #change here
+    sample_write = Writer('D:/CloneWithGetPy/ML-CommitsFrom-PythonProjects.csv', "D:/CloneWithGetPy/ML-SampledCommitsFrom-PythonProjects.csv", sample_frame) #change here
     df = pd.read_csv(commit_write.ifile)
     rn = df['RepoName']
     url = df['GitHubURL']
-    #repo_list = [] -- doesn't seem necessary to have to hold all the repos for now
     for cell in df.index: 
-        #print("Nothing is here", cell['RepoName'])
         try:
             currRepo = RepoContainer(clone_repo_path, rn[cell], url[cell])
             if(currRepo.is_created):
